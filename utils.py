@@ -1,3 +1,7 @@
+import time
+import random
+import string
+from selenium.webdriver.common.keys import Keys
 us_state_to_abbrev = {
     "Alabama": "AL",
     "Alaska": "AK",
@@ -68,3 +72,27 @@ us_state_to_abbrev = {
 }
 not_allowed = ["AS","DC","FM","GU","MH","PW","PR","VI","MP","UM"]
 us_abbrev_to_state = inv_map = {v: k for k, v in us_state_to_abbrev.items()}
+
+def wait_click(element):
+     time.sleep(0.5)
+     element.click()
+def slow_type(element, text):
+    """Send a text to an element one character at a time with a delay."""
+    i = 0
+    
+    for character in text:
+        i= i+1
+        if i % 3 == 0:
+            delay=random.uniform(0.25, 0.35)
+        if i % 3 == 1:
+            delay=random.uniform(0.05, 0.15)
+        if i % 3 == 2:
+                delay=random.uniform(0.15, 0.25)
+        if i % 9 ==7:
+            delay=random.uniform(0.1, 0.2)
+            element.send_keys(random.choice(string.ascii_letters))
+            delay=random.uniform(0.1, 0.2)
+            element.send_keys(Keys.BACK_SPACE)
+        
+        element.send_keys(character)
+        time.sleep(delay)

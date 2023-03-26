@@ -1,4 +1,4 @@
 import time 
 
-print("script one here")
+print("script two here")
 time.sleep(500)
