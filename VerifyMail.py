@@ -21,10 +21,10 @@ def login_gmail_retrieve_mails(username,mdp):
     options = webdriver.EdgeOptions() 
     options.add_argument('--disable-blink-features=AutomationControlled')
     options.add_argument("--start-maximized")
-    options.add_argument("--incognito")
+    options.add_argument("inprivate")
     #os.startfile(r"C:\Users\Moetez\Desktop\SeleniumProxy\10minParis.exe")
     #options.add_argument('--proxy-server=pr.oxylabs.io:7777')
-    driver = webdriver.Edge(options=options,executable_path="C:\\Users\\Moetez\\Desktop\\UpworkClient\\TwoDriver\\msedgedriver.exe")
+    driver = webdriver.Edge(options=options,executable_path="C:\\Users\\Moetez\\Desktop\\UpworkClient\\TwoDriver\\VerifDriver\\msedgedriver.exe")
 
     url = "https://gmail.com/"
     driver.get(url)
@@ -54,8 +54,6 @@ def login_gmail_retrieve_mails(username,mdp):
     Emails = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[7]/div[3]/div/div[2]/div[2]/div/div/div/div/div[2]/div/div[1]/div/div/div[6]/div[1]/div/table/tbody')))
     for email in Emails.find_elements(By.TAG_NAME, 'tr'):
         transformed_email=split_email(email)
-        print("sender: "+transformed_email["sender"])
-        print("first part: "+transformed_email["first_part"])
         beautiful_emails.append(transformed_email)
     return beautiful_emails
 
@@ -63,7 +61,7 @@ def login_gmail_retrieve_mails(username,mdp):
 def extract_mail(mails):
     for email in mails:
         if (email["sender"]=="Twitter" ):
-            return email["first_part"]
+            return email["first_part"].split(" ")[0]
         
 def go_to_google_and_extract_code(user,mp):
     Emails=login_gmail_retrieve_mails(user,mp)
@@ -71,11 +69,6 @@ def go_to_google_and_extract_code(user,mp):
     return extract_mail(Emails)
 
 
-
-user ="twittertesting494@gmail.com"
-mp ="twitQKrSAting494"
-print("started")
-go_to_google_and_extract_code(user,mp)
 
 #support for captcha google
 

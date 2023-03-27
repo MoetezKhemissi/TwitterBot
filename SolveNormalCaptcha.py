@@ -1,10 +1,10 @@
 import os
 from twocaptcha import TwoCaptcha
-
+from config import Two_Captcha_api_key
 
 
 def solvehCaptcha(url):
-    api_key = os.getenv('APIKEY_2CAPTCHA', '555ebaeb969ab933edb4717e2f3a0a0e')
+    api_key = os.getenv('APIKEY_2CAPTCHA', Two_Captcha_api_key)
 
     solver = TwoCaptcha(api_key)
 
