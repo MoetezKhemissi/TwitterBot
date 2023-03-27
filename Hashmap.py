@@ -1,4 +1,5 @@
-hash = {"@imedsdsd":"dsfes"}
-hash["@imedsdsd"]= "imed"
-hash["hama"]= "hama"
-print(hash)
+def hash_map():
+    map = {"-1":"test"}
+    map["test"] = "test"
+    return map
+print(hash_map())

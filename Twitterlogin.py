@@ -10,7 +10,7 @@ from selenium.webdriver.support.ui import Select
 import time
 from utils import *
 from Regen import *
-
+import validators
 def start_driver_and_login():
     return 0
 
@@ -52,7 +52,7 @@ def login(driver,email_value,mdp_value,username_value):
     slow_type(Password, mdp_value)
     login_button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div/div/div/span/span')))
     wait_click(login_button)
-    time.sleep(2)
+    time.sleep(200)
 def logout(driver):
     return 0
 def go_to_profile(driver):
@@ -70,11 +70,11 @@ def tweet(driver,tweet_message):
     return 0
 def dm(driver,username,message):
     return 0
-def inifinite_scroll(driver,max):
+def find_n_followers(driver,max):
     map = {"-1":"test"}
     previous_height = driver.execute_script('return document.body.scrollHeight')
     i=0
-    while True and i<max:
+    while i<max:
         #implement max number of elements
         i=i+1
         driver.execute_script('window.scrollTo(0,document.body.scrollHeight);')
@@ -85,21 +85,21 @@ def inifinite_scroll(driver,max):
         for element in list:
             try:
                 link = element.find_element(By.TAG_NAME,'a').get_attribute('href')
-                print("new link added :",link)
                 map[link]= "test"
-                print("map size :",len(map))
-                print(map)
             except:
                 print("no a")
            
             #print(element.find_element(By.TAG_NAME,'a').get_attribute('href'))
-        
+        i=len(map)
         if new_height == previous_height:
+            print("Done working")
             return map
+    return map
             
 def go_to_profile(drivern,user_id):
     driver.get( "https://twitter.com/"+user_id)
 def get_followers(driver,user_id):
+    time.sleep(20)
     driver.get( "https://twitter.com/"+user_id+"/followers")
 def get_following(driver,user_id):
     driver.get( "https://twitter.com/"+user_id+"/following")
@@ -107,8 +107,26 @@ def get_likes(driver,user_id):
     driver.get( "https://twitter.com/"+user_id+"/likes")
 def get_follower_list():
     get_followers(driver,"elonmusk")
-def check_if_can_dm():
-    return 0
+def check_if_can_dm(driver,list_url):
+    dm_list = []
+    for key in list_url.keys():
+        print(key)
+        if validators.url(key):
+            time.sleep(7)
+            driver.get(key)
+            try:
+                make_sure_load = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/span/span[1]')))
+                try:
+                    dm_button = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "//*[@aria-label = 'Message']")))
+                    dm_list.append(key)
+                    print(key)
+                except:
+                    print("no dm button")
+            except:
+                print("couldn't load user")
+        else:
+            print("not a url")
+    return dm_list
 username ="KimberlyWa56645"
 email_address_value="twittertesting165+Upwork@gmail.com"
 pass_value="twitQKrSAting494sssdds"
@@ -118,7 +136,9 @@ go_to_twitter(driver)
 non_essential_cookie(driver)
 login(driver,email_address_value,pass_value,username)
 get_followers(driver,"elonmusk")
-followers = inifinite_scroll(driver,10)
+followers = find_n_followers(driver,100)
 print(followers)
+print(check_if_can_dm(driver,followers))
+
 time.sleep(1000)
 
