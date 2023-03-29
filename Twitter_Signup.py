@@ -16,26 +16,7 @@ from VerifyMail import go_to_google_and_extract_code
 from selenium.webdriver.common.action_chains import ActionChains
 from utils import *
 
-def slow_type_action(actions, tweet_message):
-    """Send a text to an element one character at a time with a delay."""
-    i = 0
 
-    for character in tweet_message:
-        i= i+1
-        if i % 3 == 0:
-            delay=random.uniform(0.25, 0.35)
-        if i % 3 == 1:
-            delay=random.uniform(0.05, 0.15)
-        if i % 3 == 2:
-                delay=random.uniform(0.15, 0.25)
-        if i % 9 ==7:
-            delay=random.uniform(0.1, 0.2)
-            actions.send_keys(random.choice(string.ascii_letters)).perform()
-            delay=random.uniform(0.1, 0.2)
-            actions.send_keys(Keys.BACK_SPACE).perform()
-        
-        actions.send_keys(character).perform()
-        time.sleep(delay)
 user ="twittertesting165@gmail.com"
 mp ="twitQKrSAtidsqnssg494"
 user_testing_mail="twittertesting165+Upwork@gmail.com"

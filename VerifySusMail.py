@@ -56,6 +56,7 @@ def login_gmail_retrieve_mails(username,mdp):
         transformed_email=split_email(email)
         beautiful_emails.append(transformed_email)
     return beautiful_emails
+    
 
 
 def extract_mail(mails):
@@ -63,7 +64,7 @@ def extract_mail(mails):
         if (email["sender"]=="Twitter" ):
             return email["first_part"].split(" ")[5]
         
-def go_to_google_and_extract_code(user,mp):
+def go_to_google_and_extract_code_2(user,mp):
     Emails=login_gmail_retrieve_mails(user,mp)
     print("Verif code is :",extract_mail(Emails))
     return extract_mail(Emails)

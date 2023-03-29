@@ -11,6 +11,8 @@ import time
 from utils import *
 from Regen import *
 import validators
+from VerifySusMail import go_to_google_and_extract_code_2
+
 def start_driver_and_login():
     return 0
 
@@ -33,7 +35,7 @@ def non_essential_cookie(driver):
         time.sleep(0.5)
     except :
         print("no cookie needed")
-def login(driver,email_value,mdp_value,username_value):
+def login(driver,email_value,mdp_value,username_value,email_actual_value,email_actual_pass):
     login_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div/div[1]/div/div/div/div[2]/div[2]/div/div/div[1]/a')))
     wait_click(login_button)
     time.sleep(0.5)
@@ -52,7 +54,14 @@ def login(driver,email_value,mdp_value,username_value):
     slow_type(Password, mdp_value)
     login_button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div/div/div/span/span')))
     wait_click(login_button)
-    time.sleep(200)
+    try:
+        confimation_field = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')))
+        code_final = go_to_google_and_extract_code_2(email_actual_value,email_actual_pass)
+        slow_type(confimation_field, code_final)
+        confirm_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div/div/div')))
+        wait_click(confirm_button)
+    except:
+        print("no extra code 2fa")
 def logout(driver):
     return 0
 def go_to_profile(driver):
@@ -71,6 +80,7 @@ def tweet(driver,tweet_message):
 def dm(driver,username,message):
     return 0
 def find_n_followers(driver,max):
+    print("Finding followers")
     map = {"-1":"test"}
     previous_height = driver.execute_script('return document.body.scrollHeight')
     i=0
@@ -96,10 +106,12 @@ def find_n_followers(driver,max):
             return map
     return map
             
-def go_to_profile(drivern,user_id):
+def go_to_profile(driver,user_id):
+    time.sleep(5)
+    print("Going To profile ..")
     driver.get( "https://twitter.com/"+user_id)
 def get_followers(driver,user_id):
-    time.sleep(20)
+    time.sleep(10)
     driver.get( "https://twitter.com/"+user_id+"/followers")
 def get_following(driver,user_id):
     driver.get( "https://twitter.com/"+user_id+"/following")
@@ -108,6 +120,7 @@ def get_likes(driver,user_id):
 def get_follower_list():
     get_followers(driver,"elonmusk")
 def check_if_can_dm(driver,list_url):
+    print("Checkingg Dmable followers ..")
     dm_list = []
     for key in list_url.keys():
         print(key)
@@ -127,18 +140,43 @@ def check_if_can_dm(driver,list_url):
         else:
             print("not a url")
     return dm_list
+def dm(driver,username,message):
+    go_to_profile(driver,username)
+    try:
+            make_sure_load = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/span/span[1]')))
+            print("Sucessfully loaded user")
+            try:
+                    dm_button = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "//*[@aria-label = 'Message']")))
+                    dm_button.click()
+                    try:
+                        write_message_field = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div[2]/main/div/div/div/section[2]/div/div/div[2]/div/div/aside/div[2]/div[2]/div/div/div/div/div/label/div[1]/div/div/div/div/div/div")))
+                        write_message_field.click()
+                        print("Sucessfully clicked on button")
+                        slow_type_action(driver,message)
+                    except:
+                        print("Error writing the message")
+            except:
+                    print("no dm button")
+    except:
+        print("couldn't load user")
+    return 0
 username ="KimberlyWa56645"
 email_address_value="twittertesting165+Upwork@gmail.com"
+email_actual_value="twittertesting165@gmail.com"
+email_actual_pass="twitQKrSAtidsqnssg494"
 pass_value="twitQKrSAting494sssdds"
 regen_driver()
 driver=start_driver()
 go_to_twitter(driver)
 non_essential_cookie(driver)
-login(driver,email_address_value,pass_value,username)
-get_followers(driver,"elonmusk")
+login(driver,email_address_value,pass_value,username,email_actual_value,email_actual_pass)
+
+dm(driver,"TheMoonCarl","Hi")
+'''get_followers(driver,"elonmusk")
 followers = find_n_followers(driver,100)
 print(followers)
-print(check_if_can_dm(driver,followers))
+print(check_if_can_dm(driver,followers))'''
+
 
 time.sleep(1000)
 
