@@ -2,6 +2,7 @@ import time
 import random
 import string
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 us_state_to_abbrev = {
     "Alabama": "AL",
     "Alaska": "AK",
@@ -76,9 +77,11 @@ us_abbrev_to_state = inv_map = {v: k for k, v in us_state_to_abbrev.items()}
 def wait_click(element):
      time.sleep(0.5)
      element.click()
-def action_click(element):
+def action_click(driver,element):
      time.sleep(0.5)
-     element.click()
+     actions = ActionChains(driver)
+     actions.move_to_element(element).click().perform()
+     time.sleep(0.5)
 def slow_type(element, text):
     """Send a text to an element one character at a time with a delay."""
     i = 0

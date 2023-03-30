@@ -34,7 +34,12 @@ def non_essential_cookie(driver):
         non_essential = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div/div[2]/div/div/div/div[2]/div[2]/div/span/span'))).click()
         time.sleep(0.5)
     except :
-        print("no cookie needed")
+        try:
+            driver.refresh()
+            non_essential = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div/div[2]/div/div/div/div[2]/div[2]/div/span/span'))).click()
+            time.sleep(0.5)
+        except:
+            print("no cookie needed")
 def login(driver,email_value,mdp_value,username_value,email_actual_value,email_actual_pass):
     login_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div/div[1]/div/div/div/div[2]/div[2]/div/div/div[1]/a')))
     wait_click(login_button)
@@ -44,7 +49,7 @@ def login(driver,email_value,mdp_value,username_value,email_actual_value,email_a
     next = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[6]/div/span/span')))
     wait_click(next)
     try:
-        username_field  = WebDriverWait(driver, 7).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')))
+        username_field  = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input')))
         slow_type(username_field, username_value)
         next = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[2]/div/div/div/div')))
         wait_click(next)
@@ -165,32 +170,51 @@ def dm(driver,username,message):
         print("couldn't load user")
         print("Error: ",e)
     return 0
+def follow(driver,user_id):
+    go_to_profile(driver,user_id)
+    try:
+        string = "'Follow @" + user_id+"'"
+        print(string)
+        print("started following")
+        # URGENT TODO this find has a problem
+        click_button=WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@aria-label, "+string+")]")))
+        
+        print("found follow button")
+        action_click(driver,click_button)
+    except:
+        print("No follow found")
 heart_code = ':emoji' u'\ue007'
 def message_generator(user):
     print("Generating message ..")
     message = "@"+user+" sends free pics to everyone who follows her " + heart_code
     return message
+def change_bio(driver,bio):
+    driver.get("https://twitter.com/settings/profile")
+    bio= WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[4]/label/div/div[2]/div/textarea")))
+    bio.send_keys(bio)
+    save = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]/div/div/div/div/div/div[3]/div/div/span/span")))
+    action_click(driver,save)
 username ="KimberlyWa56645"
 email_address_value="twittertesting165+Upwork@gmail.com"
 email_actual_value="twittertesting165@gmail.com"
 email_actual_pass="twitQKrSAtidsqnssg494"
 pass_value="twitQKrSAting494sssdds"
 User_to_go_to = "OumarKBa"
+bio="this is my new bio"
 regen_driver()
 driver=start_driver()
 go_to_twitter(driver)
 non_essential_cookie(driver)
 login(driver,email_address_value,pass_value,username,email_actual_value,email_actual_pass)
-
+#follow(driver,User_to_go_to)
 #dm(driver,User_to_go_to,message_generator(username))
+change_bio(driver,bio)
 '''get_followers(driver,"elonmusk")
 followers = find_n_followers(driver,100)
 print(followers)
 print(check_if_can_dm(driver,followers))'''
 
-def follow(driver,user_id):
-    go_to_profile(driver,user_id)
-    
+
 def tweet(driver,tweet_message):
     return 0
 def dm(driver,username,message):
