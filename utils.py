@@ -76,6 +76,9 @@ us_abbrev_to_state = inv_map = {v: k for k, v in us_state_to_abbrev.items()}
 def wait_click(element):
      time.sleep(0.5)
      element.click()
+def action_click(element):
+     time.sleep(0.5)
+     element.click()
 def slow_type(element, text):
     """Send a text to an element one character at a time with a delay."""
     i = 0
@@ -98,6 +101,7 @@ def slow_type(element, text):
         time.sleep(delay)
 
 def slow_type_action(actions, tweet_message):
+    
     """Send a text to an element one character at a time with a delay."""
     i = 0
 

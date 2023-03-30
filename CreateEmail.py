@@ -7,7 +7,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-from selenium.webdriver.common.action_chains import ActionChains
+
 from fake_useragent import UserAgent
 from GeneratePerson import generate_person
 import time
@@ -86,7 +86,7 @@ driver = start_driver_stealth()
 #//*[@id="signup-button"]
 url = "https://www.google.com"
 test_person = generate_person()
-actions = ActionChains(driver)
+
 driver.get(url)
 consent_screen(driver)
 time.sleep(1)

@@ -12,7 +12,7 @@ from utils import *
 from Regen import *
 import validators
 from VerifySusMail import go_to_google_and_extract_code_2
-
+from selenium.webdriver.common.action_chains import ActionChains
 def start_driver_and_login():
     return 0
 
@@ -62,10 +62,7 @@ def login(driver,email_value,mdp_value,username_value,email_actual_value,email_a
         wait_click(confirm_button)
     except:
         print("no extra code 2fa")
-def logout(driver):
-    return 0
-def go_to_profile(driver):
-    return 0
+
 def scrape_followers(driver,url):
     # Twitter api
     # goto https://twitter.com/elonmusk
@@ -73,12 +70,7 @@ def scrape_followers(driver,url):
     # https://twitter.com/Amina5074349181
     # TODO scraper dynamic
     return 0
-def get_followers(driver,name):
-    return 0
-def tweet(driver,tweet_message):
-    return 0
-def dm(driver,username,message):
-    return 0
+
 def find_n_followers(driver,max):
     print("Finding followers")
     map = {"-1":"test"}
@@ -108,7 +100,7 @@ def find_n_followers(driver,max):
             
 def go_to_profile(driver,user_id):
     time.sleep(5)
-    print("Going To profile ..")
+    print("Going To profile ",user_id,"..")
     driver.get( "https://twitter.com/"+user_id)
 def get_followers(driver,user_id):
     time.sleep(10)
@@ -146,37 +138,67 @@ def dm(driver,username,message):
             make_sure_load = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/span/span[1]')))
             print("Sucessfully loaded user")
             try:
+                    time.sleep(3)
                     dm_button = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "//*[@aria-label = 'Message']")))
                     dm_button.click()
                     try:
-                        write_message_field = WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div[2]/main/div/div/div/section[2]/div/div/div[2]/div/div/aside/div[2]/div[2]/div/div/div/div/div/label/div[1]/div/div/div/div/div/div")))
-                        write_message_field.click()
+                        time.sleep(2)
+                        print("started messaging...")
+                        write_message_field = WebDriverWait(driver, 25).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div[2]/main/div/div/div/section[2]/div/div/div[2]/div/div/aside/div[2]/div[2]/div/div/div/div/div/label/div[1]/div/div/div/div/div/div")))
+                        print("Still messaging")
+                        time.sleep(1)
+                        actions = ActionChains(driver)
+                        actions.move_to_element(write_message_field).click().perform()
+                      
                         print("Sucessfully clicked on button")
-                        slow_type_action(driver,message)
-                    except:
+                        time.sleep(2)
+                        slow_type_action(actions,message)
+                        send_button = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/div/div[2]/main/div/div/div/section[2]/div/div/div[2]/div/div/aside/div[2]/div[3]/div/svg")))
+                        actions.move_to_element(send_button).click().perform()
+                    except Exception as e:
                         print("Error writing the message")
-            except:
+                        print("Error: ",e)
+            except Exception as e:
                     print("no dm button")
-    except:
+                    print("Error: ",e)
+    except Exception as e:
         print("couldn't load user")
+        print("Error: ",e)
     return 0
+heart_code = ':emoji' u'\ue007'
+def message_generator(user):
+    print("Generating message ..")
+    message = "@"+user+" sends free pics to everyone who follows her " + heart_code
+    return message
 username ="KimberlyWa56645"
 email_address_value="twittertesting165+Upwork@gmail.com"
 email_actual_value="twittertesting165@gmail.com"
 email_actual_pass="twitQKrSAtidsqnssg494"
 pass_value="twitQKrSAting494sssdds"
+User_to_go_to = "OumarKBa"
 regen_driver()
 driver=start_driver()
 go_to_twitter(driver)
 non_essential_cookie(driver)
 login(driver,email_address_value,pass_value,username,email_actual_value,email_actual_pass)
 
-dm(driver,"TheMoonCarl","Hi")
+#dm(driver,User_to_go_to,message_generator(username))
 '''get_followers(driver,"elonmusk")
 followers = find_n_followers(driver,100)
 print(followers)
 print(check_if_can_dm(driver,followers))'''
 
+def follow(driver,user_id):
+    go_to_profile(driver,user_id)
+    
+def tweet(driver,tweet_message):
+    return 0
+def dm(driver,username,message):
+    return 0
 
+def logout(driver):
+    return 0
+def change_bio():
+    return 0
 time.sleep(1000)
 
