@@ -19,7 +19,7 @@ from utils import *
 
 user ="twittertesting165@gmail.com"
 mp ="twitQKrSAtidsqnssg494"
-user_testing_mail="twittertesting165+Upwork@gmail.com"
+user_testing_mail="twittertesting165+Upwork111@gmail.com"
 twitter_password="twitQKrSAting494sssdds"
 tweet_message="Hello , i am really new to twitter can anyone help me out ?"
 person1 = GeneratePerson.generate_person()

@@ -51,6 +51,7 @@ def login_gmail_retrieve_mails(username,mdp):
     slow_type(password_input, mdp)
     nex_password = WebDriverWait(driver, 100).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div[1]/div[2]/div/c-wiz/div/div[2]/div/div[2]/div/div[1]/div/div/button/span')))
     wait_click(nex_password)
+    print("detecting twitter verification code ..")
     Emails = WebDriverWait(driver, 100).until(EC.visibility_of_element_located((By.XPATH, '/html/body/div[7]/div[3]/div/div[2]/div[2]/div/div/div/div/div[2]/div/div[1]/div/div/div[6]/div[1]/div/table/tbody')))
     for email in Emails.find_elements(By.TAG_NAME, 'tr'):
         transformed_email=split_email(email)

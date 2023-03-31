@@ -67,6 +67,7 @@ def login(driver,email_value,mdp_value,username_value,email_actual_value,email_a
         wait_click(confirm_button)
     except:
         print("no extra code 2fa")
+    time.sleep(5)
 
 def scrape_followers(driver,url):
     # Twitter api
@@ -176,7 +177,7 @@ def follow(driver,user_id):
         string = "'Follow @" + user_id+"'"
         print(string)
         print("started following")
-        # URGENT TODO this find has a problem
+
         click_button=WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//div[contains(@aria-label, "+string+")]")))
         
         print("found follow button")
@@ -188,14 +189,17 @@ def message_generator(user):
     print("Generating message ..")
     message = "@"+user+" sends free pics to everyone who follows her " + heart_code
     return message
-def change_bio(driver,bio):
+def change_bio(driver,bio_message):
     driver.get("https://twitter.com/settings/profile")
     bio= WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[2]/div[4]/label/div/div[2]/div/textarea")))
-    bio.send_keys(bio)
+    time.sleep(2)
+    action_click(driver,bio)
+    actions = ActionChains(driver)
+    slow_type_action(actions,bio_message)
     save = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]/div/div/div/div/div/div[3]/div/div/span/span")))
     action_click(driver,save)
 username ="KimberlyWa56645"
-email_address_value="twittertesting165+Upwork@gmail.com"
+email_address_value="twittertesting165+Upwork4@gmail.com"
 email_actual_value="twittertesting165@gmail.com"
 email_actual_pass="twitQKrSAtidsqnssg494"
 pass_value="twitQKrSAting494sssdds"
@@ -208,7 +212,7 @@ non_essential_cookie(driver)
 login(driver,email_address_value,pass_value,username,email_actual_value,email_actual_pass)
 #follow(driver,User_to_go_to)
 #dm(driver,User_to_go_to,message_generator(username))
-change_bio(driver,bio)
+#change_bio(driver,bio)
 '''get_followers(driver,"elonmusk")
 followers = find_n_followers(driver,100)
 print(followers)
