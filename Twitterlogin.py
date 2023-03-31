@@ -41,7 +41,11 @@ def non_essential_cookie(driver):
         except:
             print("no cookie needed")
 def login(driver,email_value,mdp_value,username_value,email_actual_value,email_actual_pass):
-    login_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div/div[1]/div/div/div/div[2]/div[2]/div/div/div[1]/a')))
+    try:
+        login_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div/div[1]/div/div/div/div[2]/div[2]/div/div/div[1]/a')))
+    except:
+        print("Loading is taking too long ...")
+        login_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div/div[1]/div/div/div/div[2]/div[2]/div/div/div[1]/a')))
     wait_click(login_button)
     time.sleep(0.5)
     email = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.XPATH, '/html/body/div/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[5]/label/div/div[2]/div/input')))
@@ -198,8 +202,54 @@ def change_bio(driver,bio_message):
     slow_type_action(actions,bio_message)
     save = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]/div/div/div/div/div/div[3]/div/div/span/span")))
     action_click(driver,save)
+
+def post_like(driver,link):
+    time.sleep(1)
+    driver.get(link)
+    try:
+        #cellInnerDiv
+        Container = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@data-testid = 'cellInnerDiv']")))
+        print("Found Container")
+        like_button = WebDriverWait(Container, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@data-testid = 'like']")))
+        action_click(driver,like_button)
+    except:
+        print("already liked")
+def comment_post(driver,link,message):
+    time.sleep(1)
+    driver.get(link)
+    try:
+        comment = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@data-testid = 'reply']")))
+        time.sleep(0.5)
+        action_click(driver,comment)
+        time.sleep(0.5)
+        comment_field = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "DraftEditor-root")))
+        time.sleep(0.5)
+        action_click(driver,comment_field)
+        time.sleep(0.5)
+        actions = ActionChains(driver)
+        slow_type_action(actions,message)
+        confirm_comment = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@data-testid = 'tweetButton']")))
+        action_click(driver,confirm_comment)
+        #tweetButton
+    except:
+        print("Couldn't Comment")
+
+def get_username(driver):
+    go_to_twitter(driver)
+    Account_container = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@data-testid = 'SideNav_AccountSwitcher_Button']")))
+    Div_1 = Account_container.find_elements(By.TAG_NAME, 'span')
+    for element in Div_1:
+        Full_Text=element.text
+        if Full_Text.startswith('@'):
+            return Full_Text[1:]
+        
+    
+ 
+    ''' Actual_value = div_3.find_element(By.TAG_NAME, 'span')
+    print("The username is ",Actual_value.text)'''
+post_link="https://twitter.com/LaLigaFRA/status/1641470841517899778?cxt=HHwWhICwnZLC1sctAAAA"
 username ="KimberlyWa56645"
-email_address_value="twittertesting165+Upwork4@gmail.com"
+email_address_value="twittertesting165+Upwork@gmail.com"
 email_actual_value="twittertesting165@gmail.com"
 email_actual_pass="twitQKrSAtidsqnssg494"
 pass_value="twitQKrSAting494sssdds"
@@ -210,6 +260,10 @@ driver=start_driver()
 go_to_twitter(driver)
 non_essential_cookie(driver)
 login(driver,email_address_value,pass_value,username,email_actual_value,email_actual_pass)
+get_username(driver)
+#post_like(driver,post_link)
+#comment_post(driver,post_link,"Congrats")
+
 #follow(driver,User_to_go_to)
 #dm(driver,User_to_go_to,message_generator(username))
 #change_bio(driver,bio)
@@ -219,14 +273,17 @@ print(followers)
 print(check_if_can_dm(driver,followers))'''
 
 
-def tweet(driver,tweet_message):
-    return 0
-def dm(driver,username,message):
-    return 0
 
-def logout(driver):
-    return 0
-def change_bio():
-    return 0
+
 time.sleep(1000)
 
+
+
+'''
+Maybe TODO 
+Helpers :
+Logout
+Get connected
+
+
+'''
