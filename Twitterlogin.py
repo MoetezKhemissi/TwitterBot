@@ -13,6 +13,7 @@ from Regen import *
 import validators
 from VerifySusMail import go_to_google_and_extract_code_2
 from selenium.webdriver.common.action_chains import ActionChains
+from databseoperations import *
 def start_driver_and_login():
     return 0
 
@@ -83,7 +84,15 @@ def scrape_followers(driver,url):
 
 def find_n_followers(driver,max):
     print("Finding followers")
-    map = {"-1":"test"}
+    try:
+        old_elements= database_read_followers()
+    except:
+        print("No old elements")
+    old_urls = []
+    for element in old_elements:
+        old_urls.append(element["link"])
+    print("Old length",len(old_urls))
+    map = {}
     previous_height = driver.execute_script('return document.body.scrollHeight')
     i=0
     while i<max:
@@ -97,15 +106,19 @@ def find_n_followers(driver,max):
         for element in list:
             try:
                 link = element.find_element(By.TAG_NAME,'a').get_attribute('href')
-                map[link]= "test"
+                if link not in old_urls:
+                    map[link]= "test"
+                else:
+                    i=i-1
             except:
                 print("no a")
            
             #print(element.find_element(By.TAG_NAME,'a').get_attribute('href'))
         i=len(map)
         if new_height == previous_height:
-            print("Done working")
+            print("No more followers to get")
             return map
+        
     return map
             
 def go_to_profile(driver,user_id):
@@ -188,7 +201,7 @@ def follow(driver,user_id):
         action_click(driver,click_button)
     except:
         print("No follow found")
-heart_code = ':emoji' u'\ue007'
+
 def message_generator(user):
     print("Generating message ..")
     message = "@"+user+" sends free pics to everyone who follows her " + heart_code
@@ -215,6 +228,7 @@ def post_like(driver,link):
     except:
         print("already liked")
 def comment_post(driver,link,message):
+    print("Started commenting ...")
     time.sleep(1)
     driver.get(link)
     try:
@@ -247,20 +261,24 @@ def get_username(driver):
  
     ''' Actual_value = div_3.find_element(By.TAG_NAME, 'span')
     print("The username is ",Actual_value.text)'''
-post_link="https://twitter.com/LaLigaFRA/status/1641470841517899778?cxt=HHwWhICwnZLC1sctAAAA"
+'''post_link="https://twitter.com/LaLigaFRA/status/1641470841517899778?cxt=HHwWhICwnZLC1sctAAAA"
 username ="KimberlyWa56645"
 email_address_value="twittertesting165+Upwork@gmail.com"
 email_actual_value="twittertesting165@gmail.com"
 email_actual_pass="twitQKrSAtidsqnssg494"
 pass_value="twitQKrSAting494sssdds"
 User_to_go_to = "OumarKBa"
-bio="this is my new bio"
-regen_driver()
-driver=start_driver()
-go_to_twitter(driver)
-non_essential_cookie(driver)
-login(driver,email_address_value,pass_value,username,email_actual_value,email_actual_pass)
-get_username(driver)
+bio="this is my new bio"'''
+def high_level_login(email_address_value,pass_value,username,email_actual_value,email_actual_pass):
+    regen_driver()
+    time.sleep(2)
+    driver=start_driver()
+    go_to_twitter(driver)
+    non_essential_cookie(driver)
+    login(driver,email_address_value,pass_value,username,email_actual_value,email_actual_pass)
+    return driver
+
+#get_username(driver)
 #post_like(driver,post_link)
 #comment_post(driver,post_link,"Congrats")
 
@@ -270,16 +288,7 @@ get_username(driver)
 '''get_followers(driver,"elonmusk")
 followers = find_n_followers(driver,100)
 print(followers)
-print(check_if_can_dm(driver,followers))'''
-
-
-
-
-time.sleep(1000)
-
-
-
-'''
+print(check_if_can_dm(driver,followers))
 Maybe TODO 
 Helpers :
 Logout

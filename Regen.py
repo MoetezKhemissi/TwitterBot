@@ -33,4 +33,4 @@ def regen_driver():
     remove_drivers()
     extract_files()
     print("Drivers are ready to use")
-regen_driver()
+
