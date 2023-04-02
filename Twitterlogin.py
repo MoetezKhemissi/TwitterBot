@@ -84,13 +84,15 @@ def scrape_followers(driver,url):
 
 def find_n_followers(driver,max):
     print("Finding followers")
+    old_urls = []
     try:
         old_elements= database_read_followers()
+        for element in old_elements:
+            old_urls.append(element["link"])
     except:
         print("No old elements")
-    old_urls = []
-    for element in old_elements:
-        old_urls.append(element["link"])
+    
+    
     print("Old length",len(old_urls))
     map = {}
     previous_height = driver.execute_script('return document.body.scrollHeight')
@@ -125,6 +127,11 @@ def go_to_profile(driver,user_id):
     time.sleep(5)
     print("Going To profile ",user_id,"..")
     driver.get( "https://twitter.com/"+user_id)
+def go_to_profile_with_link(driver,url):
+    print("Going To profile ",url,"..")
+    time.sleep(3)
+    
+    driver.get(url)
 def get_followers(driver,user_id):
     time.sleep(10)
     driver.get( "https://twitter.com/"+user_id+"/followers")
@@ -132,31 +139,29 @@ def get_following(driver,user_id):
     driver.get( "https://twitter.com/"+user_id+"/following")
 def get_likes(driver,user_id):
     driver.get( "https://twitter.com/"+user_id+"/likes")
-def get_follower_list():
-    get_followers(driver,"elonmusk")
+
 def check_if_can_dm(driver,list_url):
     print("Checkingg Dmable followers ..")
     dm_list = []
-    for key in list_url.keys():
-        print(key)
-        if validators.url(key):
+    for url in list_url:
+        print(url)
+        if validators.url(url):
             time.sleep(7)
-            driver.get(key)
+            driver.get(url)
             try:
                 make_sure_load = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/span/span[1]')))
                 try:
                     dm_button = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.XPATH, "//*[@aria-label = 'Message']")))
-                    dm_list.append(key)
-                    print(key)
+                    checked_and_dmable(url)
                 except:
-                    print("no dm button")
+                    checked_and_not_dmable(url)
             except:
                 print("couldn't load user")
         else:
             print("not a url")
     return dm_list
-def dm(driver,username,message):
-    go_to_profile(driver,username)
+def dm(driver,link,message):
+    go_to_profile_with_link(driver,link)
     try:
             make_sure_load = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.XPATH, '/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div[1]/div/div[1]/div/div/span/span[1]')))
             print("Sucessfully loaded user")
@@ -215,6 +220,8 @@ def change_bio(driver,bio_message):
     slow_type_action(actions,bio_message)
     save = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]/div/div/div/div/div/div[3]/div/div/span/span")))
     action_click(driver,save)
+    time.sleep(1)
+    driver.get("https://twitter.com")
 
 def post_like(driver,link):
     time.sleep(1)
