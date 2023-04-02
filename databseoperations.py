@@ -1,14 +1,17 @@
 import orm_sqlite 
 
-
+def database_read_all_accounts():
+    return Account.objects.all()
 def database_write_account(account):
     account['VerifiPhone']=0
+    account['Followed']=""
     pomodoro = Account(account)
     pomodoro.save()
 
 def database_read_accounts():
     return Account.objects.all()
-
+def extract_user_from_url(url):
+    return url.split("https://twitter.com/")[1]
 class Account(orm_sqlite.Model):  
 
     id = orm_sqlite.IntegerField(primary_key=True) # auto-increment
@@ -17,6 +20,8 @@ class Account(orm_sqlite.Model):
     username = orm_sqlite.StringField()
     OriginalMail = orm_sqlite.StringField()
     VerifiPhone = orm_sqlite.IntegerField()
+    Followed = orm_sqlite.StringField()
+    
 
 def delete_by_id(id):
     Account.objects.get(pk=id).delete()

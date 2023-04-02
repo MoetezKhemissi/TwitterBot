@@ -116,20 +116,18 @@ def dm_high_level(message):
     account = random.choice(all_accounts)
     driver = high_level_login(account["Email"],account["Password"],account["username"],account["OriginalMail"],account["Password"])
     for follower in available_to_dm:
+        #TODO add when dm it is persisted
         dm(driver,follower["link"],message)
     driver.quit()
 def follow_high_level(max):
-    '''all_accounts=database_read_accounts()
-    all_followers=database_read_followers()
-    i=0
-    for follower in all_followers:
-        if i<max:
-            account=random.choice(all_accounts)
-            driver = high_level_login(account["Email"],account["Password"],account["username"],account["OriginalMail"],account["Password"])
-            follow(driver,follower["link"])
-            driver.quit()
-            i=i+1'''
-    return 0
+    all_accounts=database_read_accounts()
+    for account in all_accounts:
+        i=0
+        #generate list of followers with no followed
+        driver = high_level_login(account["Email"],account["Password"],account["username"],account["OriginalMail"],account["Password"])
+        #follow(driver,user_id)
+        #TODO all of the accounts follow
+        driver.quit()
 
 #rotate_VPN(instructions)
 Profile_id="elonmusk"
