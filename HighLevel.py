@@ -116,17 +116,51 @@ def dm_high_level(message):
     account = random.choice(all_accounts)
     driver = high_level_login(account["Email"],account["Password"],account["username"],account["OriginalMail"],account["Password"])
     for follower in available_to_dm:
-        #TODO add when dm it is persisted
         dm(driver,follower["link"],message)
     driver.quit()
-def follow_high_level(max):
+
+def is_already_followed(account,user_id):
+    the_followers = account["Followed"]
+
+    if len(the_followers.split(","))==0:
+        split=the_followers.split(",")
+    else:
+        split=the_followers.split(",")[:len(the_followers.split(","))-1]
+    for follower in split:
+        if follower == user_id:
+            return True
+    return False
+def follow_high_level(maxu):
     all_accounts=database_read_accounts()
+    all_followers=database_read_followers()
     for account in all_accounts:
         i=0
-        #generate list of followers with no followed
+        list_followers=[]
+        # TODO generate list of followers with no followed
+        for foll in all_followers:
+            extracted_username=extract_user_from_url(foll["link"])
+            checker= is_already_followed(account,extracted_username)
+
+            if not(checker) and i<maxu:
+                list_followers.append(foll)
+                i=i+1
+
+        print("List of followers to follow :")
+        print(list_followers)
         driver = high_level_login(account["Email"],account["Password"],account["username"],account["OriginalMail"],account["Password"])
-        #follow(driver,user_id)
-        #TODO all of the accounts follow
+        for follower in list_followers:
+            extract_user=extract_user_from_url(follower["link"])
+            account["Followed"]= account["Followed"]+ extract_user +","
+            account.update()
+            try:
+                
+                follow(driver,extract_user)
+                
+                
+            except:
+                print("Could not follow")
+
+        print(account)
         driver.quit()
 
 #rotate_VPN(instructions)
@@ -135,8 +169,9 @@ post_link="https://twitter.com/elonmusk/status/1642026231766953985"
 
 message = "Based"
 Message_bio = "this is my brand new bio"
-dm_high_level("hi")
-#get_followers_high_level(115,Profile_id)
+#dm_high_level("hi")
+follow_high_level(10)
+
 #check_dmable_high_level(15)
 #change_bio_high_level(Message_bio)
 #follow_high_level(Profile_id)

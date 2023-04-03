@@ -91,6 +91,7 @@ def get_all_dmable():
     return dmable_list
 db2 = orm_sqlite.Database('Follwer.db')
 Follower.objects.backend = db2
+print(database_read_followers())
 '''
 database_write_follower(follower_template)
 print(database_read_followers())'''
