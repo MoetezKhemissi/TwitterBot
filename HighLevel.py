@@ -7,21 +7,18 @@ from Highlevelhelper import *
 from Twitterlogin import *
 from databseoperations import *
 from config import *
-email_listed=[
-    {'email':'twittertesting165@gmail.com','password':'twitQKrSAtidsqnssg494'},
-    {'email':'hamahama@gmail.com','password':'sdqdsqdsq'}
-]
-'''
-instructions = initialize_VPN(area_input=['France']) # <-- Be aware: the area_input parameter expects a list, not a string
+
+
+instructions = initialize_VPN(area_input=countries_for_nord) # <-- Be aware: the area_input parameter expects a list, not a string
+rotate_VPN(instructions)
 
 def Create_n_account(emails):
     accounts_to_create = email_to_account(emails)
-    
+    rotate_VPN(instructions)
 
     i=0
     for account in accounts_to_create:
-        #temporary to test one
-        if i < 2 :
+        
             if i%Number_of_accounts_before_rotation==0:
                 rotate_VPN(instructions)
                 time.sleep(3)
@@ -33,13 +30,14 @@ def Create_n_account(emails):
 
     # for i in 1->5 signup + create into database
     return 0
-    '''
+    
 def like_high_level(link):
     all_accounts=database_read_accounts()
     for account in all_accounts:
         #add nord
         driver = high_level_login(account["Email"],account["Password"],account["username"],account["OriginalMail"],account["Password"])
         post_like(driver,link)
+        time.sleep(2)
         driver.quit()
 
 def Comment_high_level(link,Comment_value):
@@ -49,6 +47,7 @@ def Comment_high_level(link,Comment_value):
         driver = high_level_login(account["Email"],account["Password"],account["username"],account["OriginalMail"],account["Password"])
         print("Done Connecting ..")
         comment_post(driver,link,Comment_value)
+        time.sleep(3)
         driver.quit()
 
 
@@ -112,11 +111,21 @@ def dm_high_level(message):
     
     available_to_dm = get_all_dmable_and_not_dmed()
     all_accounts=database_read_accounts()
-     # ALEEEEEEEEEEEERT Connect to magical account
-    account = random.choice(all_accounts)
+    chosen_account={}
+    for account in all_accounts:
+        if account["VerifiPhone"] == 1:
+            chosen_account=account
+            break
+
+
     driver = high_level_login(account["Email"],account["Password"],account["username"],account["OriginalMail"],account["Password"])
+
+    i=0
     for follower in available_to_dm:
-        dm(driver,follower["link"],message)
+        if i<2:
+            dm(driver,follower["link"],message)
+            Followed_Status_update(follower["id"])
+            i=i+1
     driver.quit()
 
 def is_already_followed(account,user_id):
@@ -164,30 +173,18 @@ def follow_high_level(maxu):
         driver.quit()
 
 #rotate_VPN(instructions)
-Profile_id="elonmusk"
-post_link="https://twitter.com/elonmusk/status/1642026231766953985"
 
-message = "Based"
-Message_bio = "this is my brand new bio"
-#dm_high_level("hi")
-follow_high_level(10)
+
 
 #check_dmable_high_level(15)
-#change_bio_high_level(Message_bio)
-#follow_high_level(Profile_id)
 #get_followers_high_level(100,Profile_id)
-#Comment(post_link,message)
+#Comment(post_link,message) 
 #like(link)
+#follow_high_level(10)
+#change_bio_high_level(Message_bio)
+
+
+#dm_high_level("hi")
+
 #Create_n_account(email_listed)
 
-#At each step save to database
-
-#Frontend
-#Show Scraped Followers
-#Show Created Accounts
-#Create Accounts Form
-#Get Followers Form
-#Check Dmable Form
-# Dm form
-# Follow Form
-# List + form

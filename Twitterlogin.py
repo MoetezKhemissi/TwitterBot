@@ -14,8 +14,19 @@ import validators
 from VerifySusMail import go_to_google_and_extract_code_2
 from selenium.webdriver.common.action_chains import ActionChains
 from databseoperations import *
-def start_driver_and_login():
-    return 0
+def handle_popup(driver):
+    try:
+        dialog_box = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, "//*[@role = 'dialog']")))
+        print("dialog box found")
+        time.sleep(0.5)
+        button = WebDriverWait(dialog_box, 5).until(EC.element_to_be_clickable((By.XPATH, "//*[@role = 'button']")))
+        print("button found")
+        time.sleep(0.5)
+        action_click(driver,button)
+    except Exception as e:
+        print("couldn't handle" , e)
+    #role="dialog"
+    #role="button"
 
 def start_driver():
     options = webdriver.EdgeOptions() 
@@ -74,13 +85,7 @@ def login(driver,email_value,mdp_value,username_value,email_actual_value,email_a
         print("no extra code 2fa")
     time.sleep(5)
 
-def scrape_followers(driver,url):
-    # Twitter api
-    # goto https://twitter.com/elonmusk
-    # goto https://twitter.com/elonmusk/followers
-    # https://twitter.com/Amina5074349181
-    # TODO scraper dynamic
-    return 0
+
 
 def find_n_followers(driver,max):
     print("Finding followers")
@@ -184,6 +189,7 @@ def dm(driver,link,message):
                         send_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//*[@aria-label = 'Send']")))
                         #aria-label="Send"
                         actions.move_to_element(send_button).click().perform()
+                        time.sleep(10)
                     except Exception as e:
                         print("Error writing the message")
                         print("Error: ",e)
@@ -210,7 +216,7 @@ def follow(driver,user_id):
 
 def message_generator(user):
     print("Generating message ..")
-    message = "@"+user+" sends free pics to everyone who follows her " + heart_code
+    message = "@"+user+" sends free pics to everyone who follows her " 
     return message
 def change_bio(driver,bio_message):
     driver.get("https://twitter.com/settings/profile")
@@ -218,11 +224,15 @@ def change_bio(driver,bio_message):
     time.sleep(2)
     action_click(driver,bio)
     actions = ActionChains(driver)
+    actions.key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).send_keys(Keys.BACK_SPACE).perform()
+    
+
     slow_type_action(actions,bio_message)
     save = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div/div[1]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div/div[1]/div/div/div/div/div/div[3]/div/div/span/span")))
     action_click(driver,save)
     time.sleep(1)
     driver.get("https://twitter.com")
+    time.sleep(2)
 
 def post_like(driver,link):
     time.sleep(1)
@@ -252,6 +262,7 @@ def comment_post(driver,link,message):
         slow_type_action(actions,message)
         confirm_comment = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@data-testid = 'tweetButton']")))
         action_click(driver,confirm_comment)
+        handle_popup(driver)
         #tweetButton
     except:
         print("Couldn't Comment")
