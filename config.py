@@ -1,0 +1,5 @@
+Two_Captcha_api_key="ca3f61947cd25cf9fe7f9d362dbdd6f1"
+Batch_size_check_dmable=12
+Number_of_accounts_before_rotation=5
+Number_of_accounts_per_email=3
+countries_for_nord=['France']
