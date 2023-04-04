@@ -120,12 +120,12 @@ def dm_high_level(message):
 
     driver = high_level_login(account["Email"],account["Password"],account["username"],account["OriginalMail"],account["Password"])
 
-    i=0
+
     for follower in available_to_dm:
-        if i<2:
+
             dm(driver,follower["link"],message)
             Followed_Status_update(follower["id"])
-            i=i+1
+
     driver.quit()
 
 def is_already_followed(account,user_id):
