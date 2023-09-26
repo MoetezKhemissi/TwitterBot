@@ -1,4 +1,5 @@
-# UpworkClient
+# TwitterBot
+
 Requirements : 
 -Install Python as shown in the video 
 -Install NordVpn And Connect to your account
